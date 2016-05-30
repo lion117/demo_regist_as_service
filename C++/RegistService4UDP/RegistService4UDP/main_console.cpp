@@ -35,110 +35,110 @@ using Poco::DateTimeFormatter;
 
 #include "AsynicUDP.h"
 
-class SampleTask : public Task
-{
-public:
-	SampleTask() : Task("SampleTask")
-	{
-	}
-
-	void runTask()
-	{
-		Application& app = Application::instance();
-		while (!sleep(5000))
-		{
-			Application::instance().logger().information("busy doing nothing... " + DateTimeFormatter::format(app.uptime()));
-		}
-	}
-};
-
-
-class SampleServer : public ServerApplication
-{
-public:
-	SampleServer() : _helpRequested(false)
-	{
-	}
-
-	~SampleServer()
-	{
-	}
-
-protected:
-	void initialize(Application& self)
-	{
-		loadConfiguration(); // load default configuration files, if present
-		ServerApplication::initialize(self);
-		//logger().information("starting up");
-	}
-
-	void uninitialize()
-	{
-		logger().information("shutting down");
-		ServerApplication::uninitialize();
-	}
-
-	void defineOptions(OptionSet& options)
-	{
-		ServerApplication::defineOptions(options);
-
-		options.addOption(
-			Option("help", "h", "display help information on command line arguments")
-			.required(false)
-			.repeatable(false)
-			.callback(OptionCallback<SampleServer>(this, &SampleServer::handleHelp)));
-	}
-
-	void handleHelp(const std::string& name, const std::string& value)
-	{
-		_helpRequested = true;
-		displayHelp();
-		stopOptionsProcessing();
-	}
-
-	void displayHelp()
-	{
-		HelpFormatter helpFormatter(options());
-		helpFormatter.setCommand(commandName());
-		helpFormatter.setUsage("OPTIONS");
-		helpFormatter.setHeader("A sample server application that demonstrates some of the features of the Util::ServerApplication class.");
-		helpFormatter.format(std::cout);
-	}
-
-	int main(const ArgVec& args)
-	{
-		if (!_helpRequested)
-		{
-			//TaskManager tm;
-			//tm.start(new SampleTask);
-			AsynicUDP i_this;
-			if (!i_this.setSocketOpt("127.0.0.1", 8080))
-			{
-				cout << "adsress already in use " << endl;
-				return Application::EXIT_OK;
-			}
-			i_this.start();
-			Application& app = Application::instance();
-			app.logger().information("udp server setup  " + DateTimeFormatter::format(app.uptime()));
-			waitForTerminationRequest();
-			app.logger().information("udp server shutdown  " + DateTimeFormatter::format(app.uptime()));
-			/*	tm.cancelAll();
-				tm.joinAll();*/
-		}
-		return Application::EXIT_OK;
-	}
-
-private:
-	bool _helpRequested;
-};
-
-
-POCO_SERVER_MAIN(SampleServer)
-
-//int main()
+//class SampleTask : public Task
 //{
-//	AsynicUDP::main();
+//public:
+//	SampleTask() : Task("SampleTask")
+//	{
+//	}
 //
-//	system("pause");
-//	return 0;
-//}
+//	void runTask()
+//	{
+//		Application& app = Application::instance();
+//		while (!sleep(5000))
+//		{
+//			Application::instance().logger().information("busy doing nothing... " + DateTimeFormatter::format(app.uptime()));
+//		}
+//	}
+//};
+//
+//
+//class SampleServer : public ServerApplication
+//{
+//public:
+//	SampleServer() : _helpRequested(false)
+//	{
+//	}
+//
+//	~SampleServer()
+//	{
+//	}
+//
+//protected:
+//	void initialize(Application& self)
+//	{
+//		loadConfiguration(); // load default configuration files, if present
+//		ServerApplication::initialize(self);
+//		//logger().information("starting up");
+//	}
+//
+//	void uninitialize()
+//	{
+//		logger().information("shutting down");
+//		ServerApplication::uninitialize();
+//	}
+//
+//	void defineOptions(OptionSet& options)
+//	{
+//		ServerApplication::defineOptions(options);
+//
+//		options.addOption(
+//			Option("help", "h", "display help information on command line arguments")
+//			.required(false)
+//			.repeatable(false)
+//			.callback(OptionCallback<SampleServer>(this, &SampleServer::handleHelp)));
+//	}
+//
+//	void handleHelp(const std::string& name, const std::string& value)
+//	{
+//		_helpRequested = true;
+//		displayHelp();
+//		stopOptionsProcessing();
+//	}
+//
+//	void displayHelp()
+//	{
+//		HelpFormatter helpFormatter(options());
+//		helpFormatter.setCommand(commandName());
+//		helpFormatter.setUsage("OPTIONS");
+//		helpFormatter.setHeader("A sample server application that demonstrates some of the features of the Util::ServerApplication class.");
+//		helpFormatter.format(std::cout);
+//	}
+//
+//	int main(const ArgVec& args)
+//	{
+//		if (!_helpRequested)
+//		{
+//			//TaskManager tm;
+//			//tm.start(new SampleTask);
+//			AsynicUDP i_this;
+//			if (!i_this.setSocketOpt("127.0.0.1", 8080))
+//			{
+//				cout << "adsress already in use " << endl;
+//				return Application::EXIT_OK;
+//			}
+//			i_this.start();
+//			Application& app = Application::instance();
+//			app.logger().information("udp server setup  " + DateTimeFormatter::format(app.uptime()));
+//			waitForTerminationRequest();
+//			app.logger().information("udp server shutdown  " + DateTimeFormatter::format(app.uptime()));
+//			/*	tm.cancelAll();
+//				tm.joinAll();*/
+//		}
+//		return Application::EXIT_OK;
+//	}
+//
+//private:
+//	bool _helpRequested;
+//};
+//
+//
+//POCO_SERVER_MAIN(SampleServer)
+
+int main()
+{
+	AsynicUDP::main();
+
+	system("pause");
+	return 0;
+}
