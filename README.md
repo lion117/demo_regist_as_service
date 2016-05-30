@@ -1,7 +1,7 @@
 # How to register service 
 1. setup console windows
 2. locate in the exe path
-3. enter: appname /registerService
+3. enter: "**appname /registerService**"
 
 # How to unregistered service 
 ```
