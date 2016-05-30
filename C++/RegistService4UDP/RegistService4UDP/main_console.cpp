@@ -33,6 +33,8 @@ using Poco::TaskManager;
 using Poco::DateTimeFormatter;
 
 
+#include "AsynicUDP.h"
+
 class SampleTask : public Task
 {
 public:
@@ -107,11 +109,21 @@ protected:
 	{
 		if (!_helpRequested)
 		{
-			TaskManager tm;
-			tm.start(new SampleTask);
+			//TaskManager tm;
+			//tm.start(new SampleTask);
+			AsynicUDP i_this;
+			if (!i_this.setSocketOpt("127.0.0.1", 8080))
+			{
+				cout << "adsress already in use " << endl;
+				return Application::EXIT_OK;
+			}
+			i_this.start();
+			Application& app = Application::instance();
+			app.logger().information("udp server setup  " + DateTimeFormatter::format(app.uptime()));
 			waitForTerminationRequest();
-			tm.cancelAll();
-			tm.joinAll();
+			app.logger().information("udp server shutdown  " + DateTimeFormatter::format(app.uptime()));
+			/*	tm.cancelAll();
+				tm.joinAll();*/
 		}
 		return Application::EXIT_OK;
 	}
@@ -122,3 +134,11 @@ private:
 
 
 POCO_SERVER_MAIN(SampleServer)
+
+//int main()
+//{
+//	AsynicUDP::main();
+//
+//	system("pause");
+//	return 0;
+//}

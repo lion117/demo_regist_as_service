@@ -25,6 +25,7 @@
     <ClInclude Include="stdafx.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="AsynicUDP.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -34,5 +35,6 @@
       <Filter>unit test</Filter>
     </ClCompile>
     <ClCompile Include="main_console.cpp" />
+    <ClCompile Include="AsynicUDP.cpp" />
   </ItemGroup>
 </Project>
