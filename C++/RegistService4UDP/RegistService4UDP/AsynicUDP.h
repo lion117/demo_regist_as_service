@@ -18,7 +18,13 @@ class UDPListener
 protected:
 	virtual void onRecieve(char * ptr_data, int t_lenth) = 0;
 };
+void recieveData(Poco::Net::SocketAddress t_address, string t_data);
 
+inline void recieveData(Poco::Net::SocketAddress t_address, string t_data)
+{
+	cout<< "recieve data : " << t_data<<endl;
+	
+}
 
 
 
@@ -74,7 +80,7 @@ public:
 		_thread_pool.start(*this);
 		Poco::Thread::sleep(10);  // ensure the first thread would setup 
 
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 10; i++)
 		{
 			_thread_pool.start(*this);  // setup the worker thread 
 		}
@@ -137,7 +143,10 @@ protected:
 				Packet i_packet;
 				i_packet.address = i_peeraddress;
 				i_packet.data = i_data;
-				_data_queue.push(i_packet);
+				{
+					Poco::Mutex::ScopedLock i_lock(_lock);
+					_data_queue.push(i_packet);
+				}		
 			}
 			catch (Poco::Exception ex)
 			{
@@ -155,6 +164,7 @@ protected:
 				Poco::Mutex::ScopedLock i_lock(_lock);
 				if (_data_queue.size() == 0)
 				{
+					Poco::Thread::sleep(10);
 					continue;
 				}
 				i_packet = _data_queue.front();
@@ -195,9 +205,9 @@ public:
 			cout << "adsress already in use " << endl;
 			return;
 		}
-		//i_this.setCallbck(onRecieve11);
-		//i_this.start();
-		//system("pause");
+		i_this.setCallbck(recieveData);
+		i_this.start();
+		system("pause");
 		//string i_data = "1234567890";
 		//for (int i = 0; i < 10; i++)
 		//{
